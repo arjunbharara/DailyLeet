@@ -15,25 +15,23 @@
  */
 class Solution {
     public boolean isEvenOddTree(TreeNode root) {
-        if(root == null) return true;
-        Queue<TreeNode> q = new LinkedList();
-        q.add(root);
-        boolean even = true;
-        while(q.size() > 0) {
-            int size = q.size();
-            int prevVal = even ? Integer.MIN_VALUE : Integer.MAX_VALUE; 
-			while(size > 0) {
-                root = q.poll();
-                if(even && (root.val % 2 == 0 || root.val <= prevVal)) return false; 
-                if(!even && (root.val % 2 == 1 || root.val >= prevVal)) return false; 
-                prevVal = root.val; 
-                if(root.left != null) q.add(root.left); 
-                if(root.right != null) q.add(root.right); 
-                size--;
-            }
-            even = !even; 
+        HashMap<Integer,Integer>map=new HashMap<>();
+        return check(root,map,0);
+    }
+    public boolean check(TreeNode root,HashMap<Integer,Integer>map,int level){
+        if(root==null){
+            return true;
         }
-        
-          return true;
+        if(root.val%2==level%2) return false;
+
+        if(map.containsKey(level)){
+            if(level%2==0 && map.get(level)>=root.val){
+                return false;
+            } else if(level%2==1 && map.get(level)<=root.val){
+                return false;
+            }
+        }
+        map.put(level,root.val);
+        return check(root.left,map,level+1) && check(root.right,map,level+1);
     }
 }
